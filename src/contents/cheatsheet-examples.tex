@@ -1,0 +1,214 @@
+%-----------------------------------------------------
+\begin{alerttextbox}{Introductory Note}
+This document is an adaption of the original datacamp.org cheat sheet.\\
+\begin{itemize}
+    \item https://www.datacamp.com/resources/cheat-sheets/pandas-cheat-sheet-for-data-science-in-python
+    \item https://github.com/f616/Python-Pandas-Basics-Cheat-Sheet
+\end{itemize}
+
+\end{alerttextbox}
+
+
+%-----------------------------------------------------
+\begin{textbox}{Pandas}
+The Pandas library is built on NumPy and provides easy-to-use data structures and data analysis tools for the Python programming language.
+\end{textbox}
+
+\begin{codebox}{python}{Use the following import convention:}
+import pandas as pd
+\end{codebox}
+
+%--------------------------------------------------------------
+\section{Pandas Data Structures}
+
+\begin{myblock}{Series}
+A \textbf{one-dimensional} labeled array capable of holding any data type\\\\
+
+{index-->}\hspace{0.5cm}
+\begin{tabular}{ |c|c| } 
+\hline
+ \cellcolor[HTML]{FFFFFF} a & 3\\
+  \hline
+ \cellcolor[HTML]{FFFFFF} b & -5\\
+  \hline
+ \cellcolor[HTML]{FFFFFF} c & 7\\
+  \hline
+ \cellcolor[HTML]{FFFFFF} d & 4\\
+ \hline
+\end{tabular}
+\end{myblock}
+
+\begin{codebox}{python}{}
+s = pd.Series([3, -5, 7, 4], index=['a', 'b', 'c', 'd'])
+\end{codebox}
+
+\begin{myblock}{Dataframe}
+A \textbf{two-dimensional} labeled data structure with columns of potentially different types\\\\
+
+\begin{tabular}{ l|c||c|c|r| } 
+\hhline{~----}
+ columns--> &  & \cellcolor[HTML]{FFFFFF}  Country & \cellcolor[HTML]{FFFFFF}  Capital & \cellcolor[HTML]{FFFFFF}  Population\\
+ \hhline{~====}
+ index--> & \cellcolor[HTML]{FFFFFF} 0 & Belgium & Brussels & 11190846\\
+ \hhline{~----}
+  & \cellcolor[HTML]{FFFFFF} 1 & India & New Delhi & 1303171035\\
+ \hhline{~----}
+  & \cellcolor[HTML]{FFFFFF} 2 & Brazil & Brasília & 207847528\\
+ \hhline{~----}
+\end{tabular}
+\end{myblock}
+
+\begin{codebox}{python}{}
+data = {'Country': ['Belgium', 'India', 'Brazil'], 'Capital': ['Brussels', 'New Delhi', 'Brasília'], 'Population': [11190846, 1303171035, 207847528]}
+df = pd.DataFrame(data, columns=['Country', 'Capital', 'Population'])
+\end{codebox}
+
+%--------------------------------------------------------------
+\section{Dropping}
+
+\begin{codebox}{python}{}
+s.drop(['a', 'c'])  #Drop values from rows (axis=0)
+df.drop('Country', axis=1) #Drop values from columns(axis=1)
+\end{codebox}
+
+
+%--------------------------------------------------------------
+\section{Asking For Help}
+
+\begin{codebox}{python}{}
+help(pd.Series.loc)
+\end{codebox}
+
+
+%--------------------------------------------------------------
+\section{Sort \& Rank}
+
+\begin{codebox}{python}{}
+df.sort_index()  #Sort by labels along an axis
+df.sort_values(by='Country')  #Sort by the values along an axis
+df.rank()  #Assign ranks to entries
+\end{codebox}
+
+
+%--------------------------------------------------------------
+\section{I/O}
+
+\begin{codebox}{python}{Read and Write to CSV}
+pd.read_csv('file.csv', header=None, nrows=5)
+df.to_csv('myDataFrame.csv')
+\end{codebox}
+
+\begin{codebox}{python}{Read and Write to Excel}
+xlsx = pd.ExcelFile('file.xlsx')
+df = pd.read_excel(xlsx, 'Sheet1')  #Read from xlsx file Sheet1
+df.to_excel('dir/myDataFrame.xlsx', sheet_name='Sheet1')  #Save to xlsx file
+\end{codebox}
+
+\begin{codebox}{python}{Read and Write to SQL Query or Database Table}
+from sqlalchemy import create_engine
+engine = create_engine('sqlite:///:memory:')
+pd.read_sql("SELECT * FROM my_table;", engine)
+pd.read_sql_table('my_table', engine)
+pd.read_sql_query("SELECT * FROM my_table;", engine)
+
+# read_sql() is a convenience wrapper around read_sql_table() and read_sql_query()
+
+df.to_sql('myDf', engine)
+\end{codebox}
+
+
+%--------------------------------------------------------------
+\section{Selection}
+
+\begin{codebox}{python}{Getting}
+s['b']  #Get one element
+-5
+df[1:]  #Get subset of a DataFrame
+Country Capital Population
+1 India New Delhi 1303171035
+2 Brazil Brasília 207847528
+\end{codebox}
+
+\begin{myblock}{Selecting{,} Boolean Indexing \& Setting}
+\textbf{By Position}
+\begin{codebox}{python}{}
+df.iloc[[0],[0]]  #Select single value by row & column
+'Belgium'
+df.iat[0,0]
+'Belgium'
+\end{codebox}
+
+\textbf{By Label}
+\begin{codebox}{python}{}
+df.loc[[0], ['Country']]  #Select single value by row & column labels
+'Belgium'
+df.at[0, 'Country']
+'Belgium'
+\end{codebox}
+
+\textbf{Boolean Indexing}
+\begin{codebox}{python}{}
+s[~(s > 1)]  #Series s where value is not >1
+s[(s < -1) | (s > 2)]  #s where value is <-1 or >2
+df[df['Population']>1200000000]  #Use filter to adjust DataFrame
+\end{codebox}
+
+\textbf{Setting}
+\begin{codebox}{python}{}
+s['a'] = 6  #Set index a of Series s to 6
+\end{codebox}
+\end{myblock}
+
+
+%--------------------------------------------------------------
+\section{Retrieving Series/DataFrame Information}
+
+\begin{codebox}{python}{Basic Information}
+df.shape  #(rows,columns)
+df.index  #Describe index
+df.columns  #Describe DataFrame columns
+df.info()  #Info on DataFrame
+df.count()  #Number of non-NA values
+\end{codebox}
+
+\begin{codebox}{python}{Summary}
+df.sum()  #Sum of values
+df.cumsum()  #Cummulative sum of values
+df.min()  #Minimum values
+df.max()  #Maximum values
+df.idxmin()  #Minimum index value
+df.idxmax()  #Maximum index value
+df.mean()  #Mean of values
+df.median()  #Median of values
+df.describe()  #Summary statistics
+\end{codebox}
+
+
+%--------------------------------------------------------------
+\section{Data Alignment}
+
+\begin{myblock}{Internal Data Alignment}
+\textbf{NA values are introduced in the indices that don’t overlap:}
+\begin{codebox}{python}{}
+s3 = pd.Series([7, -2, 3], index=['a', 'c', 'd'])
+s + s3
+a 10.0
+b NaN
+c 5.0
+d 7.0
+\end{codebox}
+\end{myblock}
+
+\begin{myblock}{Arithmetic Operations with Fill Methods}
+\textbf{You can also do the internal data alignment yourself with the help of the fill methods:}
+\begin{codebox}{python}{}
+s.add(s3, fill_values=0)
+a 10.0
+b -5.0
+c 5.0
+d 7.0
+s.sub(s3, fill_value=2)
+s.div(s3, fill_value=4)
+s.mul(s3, fill_value=3)
+\end{codebox}
+\end{myblock}
